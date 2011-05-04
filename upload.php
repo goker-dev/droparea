@@ -27,8 +27,12 @@ if($headers['X-File-Size'] > ($maxsize *1024)) {
 
 // File type control
 if(in_array($headers['X-File-Type'],$types)){
-    // Create an unique file name
-    $filename = sha1(@date('U').'-'.$headers['X-File-Name']).'.'.$_GET['type'];
+    // Create an unique file name    
+	if($headers['X-File-Encrypt'] == 'true' || $headers['X-File-Encrypt'] == 'TRUE' ) {
+		$filename = $headers['X-File-Location'].sha1(@date('U').'-'.$headers['X-File-Name']).'.'.$_GET['type'];
+	}else {
+		$filename = $headers['X-File-Location'].$headers['X-File-Name'];
+	}
     // Uploaded file source
     $source = file_get_contents('php://input');
     // Image resize
