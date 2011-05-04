@@ -79,7 +79,11 @@ body { padding: 20px 10px; color:#333; font: normal 12px sans-serif; }
 
 <script>
 // Calling jQuery "droparea" plugin
-$('.droparea').droparea({'post':'upload.php'});
+$('.droparea').droparea({
+	'post' : 'upload.php', 
+	'folderDest' : 'sampleFolder',
+	'encrypt' : 'true'
+});
 </script>
 
 <!-- /development area -->
