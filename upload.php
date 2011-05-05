@@ -27,10 +27,18 @@ if($headers['X-File-Size'] > ($maxsize *1024)) {
 
 // File type control
 if(in_array($headers['X-File-Type'],$types)){
-    // Create an unique file name
-    $filename = sha1(@date('U').'-'.$headers['X-File-Name']).'.'.$_GET['type'];
+    // Create an unique file name    
+	if($headers['X-File-Encrypt'] == 'true' || $headers['X-File-Encrypt'] == 'TRUE' ) {
+		$filename = $headers['X-File-Location'].sha1(@date('U').'-'.$headers['X-File-Name']).'.'.$_GET['type'];
+	}else {
+		$filename = $headers['X-File-Location'].$headers['X-File-Name'];
+	}
     // Uploaded file source
     $source = file_get_contents('php://input');
+	//Check if file exists in destination folder (Fix for encrypt = false)
+	if(file_exists($path.$filename)) {
+		$filename = $headers['X-File-Location'].$headers['X-File-Name'].'_'.@date('his').'.'.$_GET['type'];
+	}
     // Image resize
     imageresize($source, $filename, $_GET['width'], $_GET['height'], $_GET['crop'], $_GET['quality']);
 } else die("Unsupported file type: ".$headers['X-File-Type']);
@@ -39,8 +47,6 @@ if(in_array($headers['X-File-Type'],$types)){
 $path = str_replace('upload.php','',$_SERVER['SCRIPT_NAME']);
 // Image tag
 echo '<img src="'.$path.$filename.'" alt="image" />';
-
-
 
 // Image resize function with php + gd2 lib
 function imageresize($source, $destination, $width = 0, $height = 0, $crop = false, $quality = 80) {
