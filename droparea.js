@@ -2,16 +2,16 @@
 	var area, s;
 	// Methods
 	var m = {
-		traverse: function(files){
+		traverse: function(files, folderDest, encrypt){
 			if (typeof files !== "undefined") {
 				for (var i=0, l=files.length; i<l; i++) {
-					m.upload(files[i]);
+					m.upload(files[i], folderDest, encrypt);
 				}
 			} else {
 				$(area).html(nosupport);
 			}	
 		},
-		upload: function(file){
+		upload: function(file, folderDest, encrypt){
 			$(area).empty();
 			var progress = $('<div>',{'class':'progress'}),	xhr, requests;
 			$(area).append(progress);
@@ -61,10 +61,16 @@
 		    xhr.setRequestHeader("X-File-Name", file.fileName);
 		    xhr.setRequestHeader("X-File-Size", file.fileSize);
 		    xhr.setRequestHeader("X-File-Type", file.type);
+			xhr.setRequestHeader("X-File-Location", folderDest + '/');
+			xhr.setRequestHeader("X-File-Encrypt", encrypt);
 
 		    xhr.send(file);
 		}
 	};
+	/**
+	* @param folderDest string specify the destination folder
+	* @param encrypt string active encryption
+	*/
 	$.fn.droparea = function(o) {
 		// Settings
 	    s = {
@@ -74,7 +80,9 @@
 			'noimage'		: 'Unsupported file type!',
 			'uploaded'		: 'Uploaded',
 			'maxsize'		: '500', //Kb
-			'post'			: 'upload.php'
+			'post'			: 'upload.php',
+			'folderDest'    : '',
+			'encrypt'		: 'yes'
 	    };
 		this.each(function(){
 			if(o) $.extend(s, o);
@@ -101,7 +109,7 @@
 				}
 			    });
 			this.addEventListener("drop", function (e) {
-				m.traverse(e.dataTransfer.files);
+				m.traverse(e.dataTransfer.files, s.folderDest, s.encrypt);
 				e.preventDefault();
 		    	e.stopPropagation();
 				$(this).removeClass('over');
