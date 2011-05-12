@@ -1,92 +1,124 @@
 <!DOCTYPE HTML> 
 <html lang="en"> 
-<head> 
-<meta http-equiv="content-type" content="text/html; charset=utf-8" /> 
-<title>HTML5 Drag & Drop Uploader</title>
-<meta name="description" content="HTML5 Drag & Drop Uploader" /> 
-<meta name="keywords" content="html5, drag drop, uploader, sample" />
-<link type="text/plain" rel="author" href="http://gokercebeci.com/humans.txt" />
-<link rel="shortcut icon" href="http://gokercebeci.com/favicon.ico" type="image/x-icon" />    
-<style>
-body { padding: 20px 10px; color:#333; font: normal 12px sans-serif; }
-#devcontainer { margin: 0 auto; width: 940px; }
-</style>
-<!-- jquery -->
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js" type="text/javascript"></script> 
-</head> 
-<body> 
-<div id="devcontainer">
-<!-- development area -->
-<script src="droparea.js" type="text/javascript"></script> 
-<style> 
-.droparea {
-	position:relative;
-	text-align: center;
-	border: 2px dashed #ddd;
-}		
-.droparea.over {
-	background: #ffa;
-	border: 2px dashed #000;
-}
-.droparea .progress {
-	position:absolute;
-	bottom: 0;
-	width: 100%;
-	height: 0;
-	color: #fff;
-	background: #6b0;
-}
-.spot {
-    margin-bottom:20px;
-    width: 460px;
-	height: 345px;
-}
-.thumb {
-    float: left;
-    margin-right:17px;
-    width: 140px;
-	height: 105px;
-}
-.desc {
-    float:right;
-    width: 460px;
-}
-.signature a { color:#555; text-decoration:none; }
-.signature img { margin-right:5px; vertical-align: middle; }
-</style> 
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <title>HTML5 Drag & Drop Uploader</title>
+        <meta name="description" content="HTML5 Drag & Drop Uploader" />
+        <meta name="keywords" content="html5, drag drop, uploader, sample" />
+        <link type="text/plain" rel="author" href="http://gokercebeci.com/humans.txt" />
+        <link rel="shortcut icon" href="http://gokercebeci.com/favicon.ico" type="image/x-icon" />
+        <style>
+            body { padding: 20px 10px; color:#333; font: normal 12px sans-serif; }
+            #devcontainer { margin: 0 auto; width: 940px; }
+        </style>
+        <!-- jquery -->
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js" type="text/javascript"></script>
+    </head>
+    <body>
+        <div id="devcontainer">
+            <!-- development area -->
+            <script src="droparea.js" type="text/javascript"></script>
+            <style>
+                .droparea {
+                    position:relative;
+                    text-align: center;
+                }
+                .droparea div {
+                    position: absolute;
+                    top:0;
+                    width: 100%;
+                    height: 100%;
+                }
+                .droparea .instructions {
+                    border: 2px dashed #ddd;
+                    opacity: .8;
+                }
+                .droparea .instructions.over {
+                    border: 2px dashed #000;
+                    background: #ffa;
+                }
+                .droparea .progress {
+                    position:absolute;
+                    bottom: 0;
+                    width: 100%;
+                    height: 0;
+                    color: #fff;
+                    background: #6b0;
+                }
+                #areas { width: 480px; }
+                .spot {
+                    width: 460px;
+                    height: 345px;
+                }
+                .thumb {
+                    float: left;
+                    margin:20px 20px 0 0;
+                    width: 140px;
+                    min-height: 105px;
+                }
+                .desc {
+                    float:right;
+                    width: 460px;
+                }
+                .signature a { color:#555; text-decoration:none; }
+                .signature img { margin-right:5px; vertical-align: middle; }
+            </style>
 
-    <div class="desc">
-    <p><b>droparea</b> is a HTML5 drag and drop image file uploader jQuery plug-in and a php script for server-side.</p>
-    <p>I developed it to use on my <a href="http://edirne.in" title="edirne">Edirne</a> project.</p>
-    <p>I've only tested it on Google Chrome (11.0.696.57) and Mozilla Firefox (3.6.17) and it works enough for me for now!</p>
-    <p class="signature"><a href="http://gokercebeci.com/dev/" title="developer">
-        <img src="http://geticon.org/of/gokercebeci.com" alt="developer" />
-        goker.cebeci, the developer</a></p>
-    <p class="signature"><a href="https://github.com/gokercebeci/droparea">
-        <img src="http://geticon.org/of/github.com" alt="github" />
-        download or fork it on github</a></p>
-    <p class="signature"><a href="http://plugins.jquery.com/project/droparea">
-        <img src="http://geticon.org/of/jquery.com" alt="jquery" />
-        jquery plugin page</a></p>
-    </div>
+            <div class="desc">
+                <p><b>droparea</b> is a HTML5 drag and drop image file uploader jQuery plug-in and a php script for server-side.</p>
+                <p>I developed it to use on my <a href="http://edirne.in" title="edirne">Edirne</a> project.</p>
+                <p>I've only tested it on Google Chrome (11.0.696.65) and Mozilla Firefox (3.6.17) and it works enough for me for now!</p>
+                <p class="signature"><a href="http://gokercebeci.com/dev/" title="developer">
+                        <img src="http://geticon.org/of/gokercebeci.com" alt="developer" />
+                        goker.cebeci, the developer</a></p>
+                <p class="signature"><a href="https://github.com/gokercebeci/droparea">
+                        <img src="http://geticon.org/of/github.com" alt="github" />
+                        download or fork it on github</a></p>
+                <p class="signature"><a href="http://plugins.jquery.com/project/droparea">
+                        <img src="http://geticon.org/of/jquery.com" alt="jquery" />
+                        jquery plugin page</a></p>
+                <br/>
+                <h3>USAGE</h3>
+                <div class="codeblock">
+                    <code>&lt;div class="droparea spot" data-width="460" data-height="345" data-type="jpg" data-crop="true" data-quality="60" data-folder="sample" data-something="stupid"&gt;&lt;/div&gt;
+                        <p>&lt;script&gt;<br/>$('.droparea').droparea({'post' : 'upload.php'});<br/>&lt;/script&gt;</p></code>
+                </div>
+            </div>
 
-    <div class="droparea spot" data-width="460" data-height="345" data-type="jpg" data-crop="true" data-quality="60"></div>
+            <div id="areas">
+                <div class="droparea spot" data-width="460" data-height="345" data-type="jpg" data-crop="true" data-quality="60"></div>
 
-    <div class="droparea thumb" data-width="140" data-height="105" data-type="jpg" data-crop="true" data-quality="60"></div>
-    <div class="droparea thumb" data-width="140" data-height="105" data-type="jpg" data-crop="true" data-quality="60"></div>
-    <div class="droparea thumb" data-width="140" data-height="105" data-type="jpg" data-crop="true" data-quality="60"></div>
+                <div class="droparea thumb" data-width="140" data-height="105" data-type="jpg" data-crop="true" data-quality="60"></div>
+                <div class="droparea thumb" data-width="140" data-height="105" data-type="jpg" data-crop="true" data-quality="40"></div>
+                <div class="droparea thumb" data-width="140" data-height="105" data-type="gif" data-crop="true"></div>
 
+                <div class="droparea thumb" data-width="140" data-name="image" data-value="face.png">
+                    <img src="face.png" alt="face" />
+                </div>
+                <div class="droparea thumb" data-width="140" data-type="jpg" data-folder="sample"></div>
+                <div class="droparea thumb" data-width="140" data-type="jpg" data-something="stupid"></div>
+            </div>
 
-<script>
-// Calling jQuery "droparea" plugin
-$('.droparea').droparea({
-	'post' : 'upload.php', 
-	'folderDest' : 'sampleFolder',
-	'encrypt' : 'true'
-});
-</script>
+            <script>
+                // Calling jQuery "droparea" plugin
+                $('.droparea').droparea({
+                    'post' : 'upload.php',
+                    'init' : function(r){
+                        //console.log('my init',r);
+                    },
+                    'start' : function(r){
+                        //console.log('my start',r);
+                    },
+                    'error' : function(r){
+                        //console.log('my error',r);
+                    },
+                    'complete' : function(r){
+                        //console.log('my complete',r);
+                    }
+                });
+            </script>
 
-<!-- /development area -->
-</div>
-</body>
+            <!-- /development area -->
+        </div>
+    </body>
 </html> 
