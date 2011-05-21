@@ -65,7 +65,7 @@
 		    xhr.send(file);
 		}
 	};
-	$.fn.droparea = function(o) {
+	$.fn.droparea = function(o, f) {
 		// Settings
 	    s = {
 			'instructions'	: 'drop an image file here',
@@ -105,6 +105,9 @@
 				e.preventDefault();
 		    	e.stopPropagation();
 				$(this).removeClass('over');
+                                //start callback function
+                                f();
+
 			},false);				
 		});
 	};
