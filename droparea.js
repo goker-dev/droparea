@@ -106,8 +106,9 @@
 		    	e.stopPropagation();
 				$(this).removeClass('over');
                                 //start callback function
-                                f();
-
+                                if (typeof f == 'function') { 
+        			   f.call(this);
+    			        }
 			},false);				
 		});
 	};
