@@ -50,10 +50,12 @@
 			//Retrieve values	
 			 var width = $(area).width();
 			 var height = $(area).height();
+                         var type = file.type; type = (type.split('/'))[1];
+
 			// Set request parameters
 			requests = '?width=' + width
     			     + '&height=' + height
-    			     + '&type=' + $(area).data('type')
+    			     + '&type=' + type
     			     + '&crop=' + $(area).data('crop')
     			     + '&quality=' + $(area).data('quality')
     			     + '&id=' + s.id;
