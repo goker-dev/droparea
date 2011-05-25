@@ -47,12 +47,16 @@
 				progress.html(s.uploaded).fadeOut('slow');
 			}, false);
 			
+			//Retrieve values	
+			 var width = $(area).width();
+			 var height = $(area).height();
 			// Set request parameters
-			requests = '?width=' + $(area).data('width')
-    			     + '&height=' + $(area).data('height')
+			requests = '?width=' + width
+    			     + '&height=' + height
     			     + '&type=' + $(area).data('type')
     			     + '&crop=' + $(area).data('crop')
-    			     + '&quality=' + $(area).data('quality');
+    			     + '&quality=' + $(area).data('quality')
+    			     + '&id=' + s.id;
 			
 			xhr.open("post", s.post + requests, true); 
             
