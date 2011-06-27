@@ -3,7 +3,7 @@
 // Maximum file size
 $maxsize = 1024; //Kb
 // Supporting image file types
-$types = Array('image/png', 'images/gif', 'image/jpeg');
+$types = Array('image/png', 'image/gif', 'image/jpeg');
 
 $headers = getallheaders();
 
@@ -112,7 +112,7 @@ function imageresize($source, $destination, $width = 0, $height = 0, $crop = fal
                 imagepng($crop ? $crop : $new, $destination, $pngQuality);
                 break;
             case 'gif':
-                imagepng($crop ? $crop : $new, $destination);
+                imagegif($crop ? $crop : $new, $destination);
                 break;
         }
         @imagedestroy($image);
