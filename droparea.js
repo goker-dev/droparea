@@ -73,7 +73,7 @@
                     xhr.setRequestHeader('x-param-'+i, area.data(i));
 
             var fd = new FormData();
-            fd.append("filename", file);
+            fd.append("x-file-name", file);
             xhr.send(fd);
         }
     };
