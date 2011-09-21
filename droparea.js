@@ -62,17 +62,19 @@
             xhr.open("post", s.post, true);
             
             // Set appropriate headers
-            xhr.setRequestHeader("content-type", "multipart/form-data");
             xhr.setRequestHeader("x-file-name", file.fileName);
             xhr.setRequestHeader("x-file-size", file.fileSize);
             xhr.setRequestHeader("x-file-type", file.type);
+            xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 
             // Set request headers
             for (var i in area.data())
                 if (typeof area.data(i) !== "object")
                     xhr.setRequestHeader('x-param-'+i, area.data(i));
 
-            xhr.send(file);
+            var fd = new FormData();
+            fd.append("x-file-name", file);
+            xhr.send(fd);
         }
     };
     $.fn.droparea = function(o) {
