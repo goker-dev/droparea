@@ -38,7 +38,7 @@ if (in_array($headers['x-file-type'], $types)) {
                 . '.' . $headers['x-param-type'];
     }
     // Uploaded file source
-    $source = file_get_contents('php://input');
+    $source = file_get_contents($_FILES["x-file-name"]["tmp_name"]);
     // Image resize
     imageresize($source, $filename,
             $headers['x-param-width'],
