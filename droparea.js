@@ -3,7 +3,7 @@
     // Methods
     var m = {
         init: function(e){},
-        start: function(e){},
+        start: function(files,area){},
         complete: function(r){},
         error: function(r){ alert(r.error); return false; },
         traverse: function(files,area){
@@ -117,7 +117,7 @@
             });
             this.addEventListener("drop", function (e) {
                 e.preventDefault();
-                s.start($(this));
+                s.start(e.dataTransfer.files, $(this));
                 m.traverse(e.dataTransfer.files, $(this));
                 instructions.removeClass().empty();
             },false);
