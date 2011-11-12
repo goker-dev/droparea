@@ -3,13 +3,17 @@ server-side.
 
 I added:
 
-  * client side image resizing with canvas on browser option
+  * client-side image resizing with canvas on browser option
   * data url option for sending a file/image as a text field with ajax
-  * on click file browsing
+  * click event for browsing files
 
-I developed it to use on my Uygulama project new version.
-I've only tested it on Chromium (14.0.835.202), Google Chrome (15.0.874.120) and
- Mozilla Firefox (3.6.17) "with some bugs" and it works enough for me for now!
+I developed it to use on my Uygulama project's new version.
+
+I've only tested it on 
+  * Chromium (14.0.835.202), 
+  * Google Chrome (15.0.874.120),
+  * Mozilla Firefox (3.6.17) "has some bugs" 
+and it works enough for me for now!
 
 
 goker.cebeci, the developer
@@ -26,14 +30,13 @@ goker.cebeci, the developer
 
 ==DOC==
 
-*If you want to send more data with uploading file, you can use data tag. 
-For example: data-width="345".
+* If you want to post more data while uploading a file, you can use "data tag". 
+For example: data-custom="custom-data".
 
 data-width, 
 data-height : Optional but required for canvas resizing.
 data-crop   : Optional. This is crop option for canvas resizing. [true/false]
 data-canvas : Canvas resizing option. Default value is false.
-data-post   : Optional. This is an URL for directly posting.
-data-type   : Optional. File tld. png, jpg, zip If one than more separate with 
-              coma.
+data-post   : Optional. This is an URL for direct posting.
+data-type   : Optional. File tld. [png, jpg, zip] Separate with coma if more than one.
 
