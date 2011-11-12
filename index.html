@@ -98,6 +98,7 @@
                     background: #888;
                 }
                 h3 { clear: both; padding:5px 0; }
+                #sampleform { width: 470px; }
             </style>
 
             <div class="desc">
@@ -106,10 +107,17 @@
                 <ul>
                     <li><b>client side image resizing with canvas on browser</b> option</li>
                     <li><b>data url</b> option for sending a file/image as a text field with ajax</li>
-                    <li>on click file browsing</li>
+                    <li>click event for browsing files</li>
                 </ul>
-                <p>I developed it to use on my <a href="http://uygulama.net" title="web builder"><b>Uygulama</b></a> project new version.</p>
-                <p>I've only tested it on <b>Chromium (14.0.835.202)</b>, <b>Google Chrome (15.0.874.120)</b> and <b>Mozilla Firefox (3.6.17)</b> "with some bugs" and it works enough for me for now!</p>
+                <p>I developed it to use on my <a href="http://uygulama.net" title="web builder"><b>Uygulama</b></a> project's new version.</p>
+                <p>I've only tested it on</p>
+                <ul>
+                    <li><b>Chromium (14.0.835.202)</b>, 
+                    <li><b>Google Chrome (15.0.874.120)</b>,</li>
+                    <li><b>Mozilla Firefox (3.6.17)</b> "has some bugs"</li>
+                </ul>
+                <p>and it works enough for me for now!</p>
+                <br>
                 <p class="signature"><a href="http://gokercebeci.com/dev/" title="developer">
                         <img src="http://geticon.org/of/gokercebeci.com" alt="developer" />
                         goker.cebeci, the developer</a></p>
@@ -118,7 +126,7 @@
                         download or fork it on github</a></p>
                 <p class="signature"><a href="http://plugins.jquery.com/project/droparea">
                         <img src="http://geticon.org/of/jquery.com" alt="jquery" />
-                        jquery plugin page</a></p>
+                        jQuery plugin page</a></p>
                 <br/>
                 <h3>USAGE</h3>
                 <div class="codeblock">
@@ -127,13 +135,14 @@
                 </div>
                 <h3>DOC</h3>
                 <div class="codeblock">
-                	If you want to send more data with uploading file, you can use <b>data</b> tag. For example: <b>data-width="345"</b>.
+                	If you want to post more data while uploading file, you can use <b>data</b> tag. 
+                        For example: <b>data-custom="custom-data"</b>.
                     <ul>
                         <li></code><b>data-width, data-height </b> : Optional but required for canvas resizing.<code></li>
                         <li></code><b>data-crop </b> : Optional. This is crop option for canvas resizing. [true/false]<code></li>
                         <li></code><b>data-canvas </b> : Canvas resizing option. Default value is <b>false</b>.<code></li>
                         <li></code><b>data-post </b> : Optional. This is an URL for directly posting.<code></li>
-                        <li></code><b>data-type </b> : Optional. File tld. <b>png, jpg, zip</b> If one than more separate with coma.<code></li>
+                        <li></code><b>data-type </b> : Optional. File tld. [<b>png, jpg, zip</b>] Separate with coma if more than one.<code></li>
                     </ul>
                 </div>
             </div>
@@ -145,11 +154,11 @@
                     
                 <div class="clear"></div>
                 <br/>
-                <b>* client side image resizing with ks and canvas on browser is activated on the left area.</b> 
+                <b>* client side image resizing is enabled on the right area.</b> 
                 <br/><br/>
                 <h3>SEND A FILE/IMAGE WITH AJAX FORM</h3>
                 <form id="sampleform" action="post.php" method="post">
-                    <div>* file data will send as a data url (base64) with a text input when the form submit.</div>
+                    <p>* file will be sent as a data url (base64) with a hidden input value when the form is submitted.</p>
                     <input type="file" class="droparea thumb" name="thumbnail" data-width="140" data-canvas="true">
                     <input type="text" name="title" value="sample title ..">
                     <textarea name="description">sample description ..</textarea>
@@ -160,7 +169,6 @@
                 </div>
                 <script>
                     $('#sampleform').submit(function(e){
-                        console.log($('[name=thumbnail]').val());
                         e.preventDefault();
                         $.ajax({
                             url:$(this).attr('action'),
@@ -189,7 +197,6 @@
                     //console.log('custom init',result);
                 },
                 'start' : function(area){
-                    console.log('start');
                     area.find('.error').remove(); 
                 },
                 'error' : function(result, input, area){
