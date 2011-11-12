@@ -10,6 +10,7 @@
         <style>
             body { padding: 20px 10px; color:#333; font: normal 12px sans-serif; }
             #devcontainer { margin: 0 auto; width: 940px; }
+            .clear { clear: both; }
         </style>
         <!-- jquery -->
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js" type="text/javascript"></script>
@@ -17,27 +18,35 @@
     <body>
         <div id="devcontainer">
             <!-- development area -->
-            <script src="droparea.js" type="text/javascript"></script>
+            <script src="droparea.js"></script>
             <style>
                 .droparea {
                     position:relative;
                     text-align: center;
                 }
-                .droparea div {
+                .multiple {
+                    position:relative;
+                    height: 20px;
+                }
+                .droparea div, .droparea input, .multiple div, .multiple input {
                     position: absolute;
                     top:0;
                     width: 100%;
                     height: 100%;
                 }
-                .droparea .instructions {
+                .droparea input, .multiple input {
+                    cursor: pointer; 
+                    opacity: 0; 
+                }
+                .droparea .instructions, .multiple .instructions {
                     border: 2px dashed #ddd;
                     opacity: .8;
                 }
-                .droparea .instructions.over {
+                .droparea .instructions.over, .multiple .instructions.over {
                     border: 2px dashed #000;
                     background: #ffa;
                 }
-                .droparea .progress {
+                .droparea .progress, .multiple .progress {
                     position:absolute;
                     bottom: 0;
                     width: 100%;
@@ -45,14 +54,22 @@
                     color: #fff;
                     background: #6b0;
                 }
-                #areas { width: 480px; }
-                .spot {
-                    width: 460px;
-                    height: 345px;
+                .multiple .progress {
+                    width: 0;
+                    height: 100%;
+                }
+
+
+                #areas { float: left; width: 480px; }
+                div.spot {
+                    float: left;
+                    margin: 0 20px 0 0;
+                    width: 220px;
+                    min-height: 345px;
                 }
                 .thumb {
                     float: left;
-                    margin:20px 20px 0 0;
+                    margin:0 20px 20px 0;
                     width: 140px;
                     min-height: 105px;
                 }
@@ -62,12 +79,37 @@
                 }
                 .signature a { color:#555; text-decoration:none; }
                 .signature img { margin-right:5px; vertical-align: middle; }
+                input[type=text], textarea {
+                    margin-bottom: 10px;
+                    padding: 5px;
+                    width: 288px;
+                    height: 18px;
+                    border: 1px solid #bbb;
+                }
+                textarea {
+                    height: 58px;
+                }
+                input[type=submit] {
+                    float: right;
+                    margin-right: 20px;
+                    padding: 5px 25px;
+                    color: #111;
+                    border: 1px solid #666;
+                    background: #888;
+                }
+                h3 { clear: both; padding:5px 0; }
             </style>
 
             <div class="desc">
-                <p><b>droparea</b> is a HTML5 drag and drop image file uploader jQuery plug-in and a php script for server-side.</p>
-                <p>I developed it to use on my <a href="http://edirne.in" title="edirne">Edirne</a> project.</p>
-                <p>I've only tested it on Google Chrome (11.0.696.65) and Mozilla Firefox (3.6.17) and it works enough for me for now!</p>
+                <p><b>droparea</b> is a HTML5 drag and drop image/file jQuery plug-in and a php script for server-side.</p>
+                <p>I added:</p>
+                <ul>
+                    <li><b>client side image resizing with canvas on browser</b> option</li>
+                    <li><b>data url</b> option for sending a file/image as a text field with ajax</li>
+                    <li>on click file browsing</li>
+                </ul>
+                <p>I developed it to use on my <a href="http://uygulama.net" title="web builder"><b>Uygulama</b></a> project new version.</p>
+                <p>I've only tested it on <b>Chromium (14.0.835.202)</b>, <b>Google Chrome (15.0.874.120)</b> and <b>Mozilla Firefox (3.6.17)</b> "with some bugs" and it works enough for me for now!</p>
                 <p class="signature"><a href="http://gokercebeci.com/dev/" title="developer">
                         <img src="http://geticon.org/of/gokercebeci.com" alt="developer" />
                         goker.cebeci, the developer</a></p>
@@ -80,42 +122,90 @@
                 <br/>
                 <h3>USAGE</h3>
                 <div class="codeblock">
-                    <code>&lt;div class="droparea spot" data-width="460" data-height="345" data-type="jpg" data-crop="true" data-quality="60" data-folder="sample" data-something="stupid"&gt;&lt;/div&gt;
-                        <p>&lt;script&gt;<br/>$('.droparea').droparea({'post' : 'upload.php'});<br/>&lt;/script&gt;</p></code>
+                    <code>&lt;input type="file" class="droparea" data-crop="true" ... /&gt;
+                        <p>&lt;script&gt;<br/>$('.droparea').droparea([options]);<br/>&lt;/script&gt;</p></code>
+                </div>
+                <h3>DOC</h3>
+                <div class="codeblock">
+                	If you want to send more data with uploading file, you can use <b>data</b> tag. For example: <b>data-width="345"</b>.
+                    <ul>
+                        <li></code><b>data-width, data-height </b> : Optional but required for canvas resizing.<code></li>
+                        <li></code><b>data-crop </b> : Optional. This is crop option for canvas resizing. [true/false]<code></li>
+                        <li></code><b>data-canvas </b> : Canvas resizing option. Default value is <b>false</b>.<code></li>
+                        <li></code><b>data-post </b> : Optional. This is an URL for directly posting.<code></li>
+                        <li></code><b>data-type </b> : Optional. File tld. <b>png, jpg, zip</b> If one than more separate with coma.<code></li>
+                    </ul>
                 </div>
             </div>
 
             <div id="areas">
-                <div class="droparea spot" data-width="460" data-height="345" data-type="jpg" data-crop="true" data-quality="60"></div>
-
-                <div class="droparea thumb" data-width="140" data-height="105" data-type="jpg" data-crop="true" data-quality="60"></div>
-                <div class="droparea thumb" data-width="140" data-height="105" data-type="jpg" data-crop="true" data-quality="40"></div>
-                <div class="droparea thumb" data-width="140" data-height="105" data-type="gif" data-crop="true"></div>
-
-                <div class="droparea thumb" data-width="140" data-name="image" data-value="face.png">
-                    <img src="face.png" alt="face" />
+                
+                <input type="file" class="droparea spot" name="xfile" data-post="upload.php" data-width="220" data-height="345" data-crop="true"/>
+                <input type="file" class="droparea spot" name="xfile" data-post="upload.php" data-width="220" data-height="345" data-crop="true" data-canvas="true"/>
+                    
+                <div class="clear"></div>
+                <br/>
+                <b>* client side image resizing with ks and canvas on browser is activated on the left area.</b> 
+                <br/><br/>
+                <h3>SEND A FILE/IMAGE WITH AJAX FORM</h3>
+                <form id="sampleform" action="post.php" method="post">
+                    <div>* file data will send as a data url (base64) with a text input when the form submit.</div>
+                    <input type="file" class="droparea thumb" name="thumbnail" data-width="140" data-canvas="true">
+                    <input type="text" name="title" value="sample title ..">
+                    <textarea name="description">sample description ..</textarea>
+                    <input type="submit" value="Submit">
+                </form>
+                <div id="form-result" class="clear">
+                    <b>RESULT:</b>
                 </div>
-                <div class="droparea thumb" data-width="140" data-type="jpg" data-folder="sample"></div>
-                <div class="droparea thumb" data-width="140" data-type="jpg" data-something="stupid"></div>
+                <script>
+                    $('#sampleform').submit(function(e){
+                        console.log($('[name=thumbnail]').val());
+                        e.preventDefault();
+                        $.ajax({
+                            url:$(this).attr('action'),
+                            type:'post',
+                            data:$(this).serialize(),
+                            dataType:'json',
+                            success:function(r){
+                                $('#form-result').append(
+                                '<div><b>Title: </b>'+r.title+'</div>'
+                                ,'<div><b>Description: </b>'+r.description+'</div>'
+                                ,'<div><b>Image/File: </b>'
+                                  +'<a href="'+ r.url +'" target="_blank">'+ r.url +'</a>'
+                                  +'</div>'
+                                );
+                            }
+                        });
+                });
+                </script>
             </div>
 
             <script>
-                // Calling jQuery "droparea" plugin
-                $('.droparea').droparea({
-                    'post' : 'upload.php',
-                    'init' : function(r){
-                        //console.log('my init',r);
-                    },
-                    'start' : function(r){
-                        //console.log('my start',r);
-                    },
-                    'error' : function(r){
-                        //console.log('my error',r);
-                    },
-                    'complete' : function(r){
-                        //console.log('my complete',r);
-                    }
-                });
+            // Calling jQuery "droparea" plugin
+            $('.droparea').droparea({
+                'instructions': 'drop a file or click to here',
+                'init' : function(result){
+                    //console.log('custom init',result);
+                },
+                'start' : function(area){
+                    console.log('start');
+                    area.find('.error').remove(); 
+                },
+                'error' : function(result, input, area){
+                    $('<div class="error">').html(result.error).prependTo(area); 
+                    return 0;
+                    //console.log('custom error',result.error);
+                },
+                'complete' : function(result, file, input, area){
+                    if((/image/i).test(file.type)){
+                        area.find('img').remove();
+                        //area.data('value',result.filename);
+                        area.append($('<img>',{'src': result.path + result.filename + '?' + Math.random()}));
+                    } 
+                    //console.log('custom complete',result);
+                }
+            });
             </script>
 
             <!-- /development area -->

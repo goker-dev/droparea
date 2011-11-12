@@ -1,59 +1,75 @@
 <?php
 
-// Maximum file size
-$maxsize = 1024; //Kb
-// Supporting image file types
-$types = Array('image/png', 'image/gif', 'image/jpeg');
-
-$headers = getallheaders();
-
 // LOG
 $log = '=== ' . @date('Y-m-d H:i:s') . ' ===============================' . "\n"
-        . 'HEADERS:' . print_r($headers, 1) . "\n";
-$fp = fopen('log.txt', 'a');
+        . 'FILES:' . print_r($_FILES, 1) . "\n"
+        . 'POST:' . print_r($_POST, 1) . "\n";
+$fp = fopen('upload-log.txt', 'a');
 fwrite($fp, $log);
 fclose($fp);
+
 
 // Result object
 $r = new stdClass();
 // Result content type
 header('content-type: application/json');
 
+
+// Maximum file size
+$maxsize = 10; //Mb
 // File size control
-if ($headers['x-file-size'] > ($maxsize * 1024)) {
+if ($_FILES['xfile']['size'] > ($maxsize * 1048576)) {
     $r->error = "Max file size: $maxsize Kb";
 }
 
-$folder = $headers['x-param-folder'] ? $headers['x-param-folder'] . '/' : '';
-if ($folder && !is_dir($folder))
+
+// Uploading folder
+$folder = 'files/';
+if (!is_dir($folder))
+    mkdir($folder);
+// If specifics folder 
+$folder .= $_POST['folder'] ? $_POST['folder'] . '/' : '';
+if (!is_dir($folder))
     mkdir($folder);
 
+
+// If the file is an image
+if (preg_match('/image/i', $_FILES['xfile']['type'])) {
+
+    $filename = $_POST['value'] ? $_POST['value'] :
+            $folder . sha1(@microtime() . '-' . $_FILES['xfile']['name']) . '.jpg';
+} else {
+
+    $tld = split(',', $_FILES['xfile']['name']);
+    $tld = $tld[count($tld) - 1];
+    $filename = $_POST['value'] ? $_POST['value'] :
+            $folder . sha1(@microtime() . '-' . $_FILES['xfile']['name']) . $tld;
+}
+
+
+// Supporting image file types
+$types = Array('image/png', 'image/gif', 'image/jpeg');
 // File type control
-if (in_array($headers['x-file-type'], $types)) {
+if (in_array($_FILES['xfile']['type'], $types)) {
     // Create an unique file name    
-    if ($headers['x-param-value']) {
-        $filename = $folder . $headers['x-param-value'];
-    } else {
-        $filename = $folder . sha1(@date('U') . '-' . $headers['x-file-name'])
-                . '.' . $headers['x-param-type'];
-    }
     // Uploaded file source
-    $source = file_get_contents($_FILES["x-file-name"]["tmp_name"]);
+    $source = file_get_contents($_FILES["xfile"]["tmp_name"]);
     // Image resize
-    imageresize($source, $filename,
-            $headers['x-param-width'],
-            $headers['x-param-height'],
-            $headers['x-param-crop'],
-            $headers['x-param-quality']);
+    imageresize($source, $filename, $_POST['width'], $_POST['height'], $_POST['crop'], $_POST['quality']);
 } else
-    $r->error = "Unsupported file type: " . $headers['x-file-type'];
+// If the file is not an image
+    move_uploaded_file($_FILES["xfile"]["tmp_name"], $filename);
+
 
 // File path
 $path = str_replace('upload.php', '', $_SERVER['SCRIPT_NAME']);
-// Image tag
+
+// Result data
 $r->filename = $filename;
 $r->path = $path;
 $r->img = '<img src="' . $path . $filename . '" alt="image" />';
+
+// Return to JSON
 echo json_encode($r);
 
 // Image resize function with php + gd2 lib
@@ -83,7 +99,7 @@ function imageresize($source, $destination, $width = 0, $height = 0, $crop = fal
         $x_mid = $new_width * .5;  //horizontal middle
         $y_mid = $new_height * .5; //vertical middle
         // Resample
-        error_log('height: '.$new_height.' - width: '.$new_width);
+        error_log('height: ' . $new_height . ' - width: ' . $new_width);
         $new = imagecreatetruecolor(round($new_width), round($new_height));
         imagecopyresampled($new, $image, 0, 0, 0, 0, $new_width, $new_height, $w, $h);
         // Crop
