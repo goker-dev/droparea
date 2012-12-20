@@ -18,12 +18,12 @@
             }
         },
         control: function(file, input, area){
-        	
+
             var tld = file.name.toLowerCase().split(/\./);
             tld = tld[tld.length -1];
-        	
+
             //var types = $(area).data('type').split(/,/);
-        	
+
             // File type control
             //for(var i = types.length; i >= 0; i--){
             //typeof FileReader === "undefined" ||
@@ -37,7 +37,7 @@
                 return false;
             }
             //}
-			
+
             // File size control
             if (file.size > (s.maxsize * 1048576)) {
                 //area.html(file.type,s.maxsize);
@@ -46,8 +46,8 @@
                 }, input, area);
                 return false;
             }
-                        
-            // If the file is an image and data-resize paramater is true, 
+
+            // If the file is an image and data-resize paramater is true,
             // before the uploading resize the imege on browser.
             if((/image/i).test(file.type) && input.data('canvas'))
                 m.resize(file, input, area);
@@ -55,23 +55,23 @@
                 m.upload(file, input, area);
         },
         resize: function(file, input, area){
-            
+
             // for using after the resize
             var name = file.name;
-        		
+
             // Create new objects
             var canvas = document.createElement("canvas");
             //$(canvas).appendTo(area);
             var img = document.createElement("img");
-        	
+
             var WIDTH  = 0 | input.data('width');
             var HEIGHT = 0 | input.data('height');
-			
+
             // Read the file
-            var reader = new FileReader();  
-            reader.onloadend = function(e) { 
-                img.src = e.target.result; 
-				
+            var reader = new FileReader();
+            reader.onloadend = function(e) {
+                img.src = e.target.result;
+
                 // Calculate new sizes
                 // Get dimensions
                 var width = img.width;
@@ -90,27 +90,27 @@
                         height = HEIGHT;
                     }
                 }
-		        
+
                 // Draw new image
                 canvas.width = width;
                 canvas.height = height;
                 var ctx = canvas.getContext("2d");
                 ctx.drawImage(img, 0, 0, width, height);
-				
+
                 var data = canvas.toDataURL("image/jpeg");
-				
+
                 // Data checking
                 if (data.length <= 6) {
                     s.error({
                         'error':'Image did not created. Please, try again.'
                     }, input, area);
-                    return 0;					
+                    return 0;
                 } else {
-                    
+
                     // Get new file data from canvas and convert to blob
                     file = m.dataURItoBlob(data);
                     file.name = name;
-                    
+
                     if(input.data('post')){
                         // Start upload new file
                         m.upload(file, input, area);
@@ -125,16 +125,21 @@
             reader.readAsDataURL(file);
         },
         upload: function(file, input, area){
-        	
+
             area.find('div').empty();
             var progress = $('<div>',{
                 'class':'progress'
             });
             area.append(progress);
-			
+
             // Uploading - for Firefox, Google Chrome and Safari
             var xhr = new XMLHttpRequest();
             xhr.open("post", input.data('post'), true);
+
+            // DEVISE FIX
+            var token = $('meta[name="csrf-token"]').attr('content');
+            if (token) xhr.setRequestHeader('X-CSRF-Token', token);
+
             xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
             // Update progress bar
             xhr.upload.addEventListener("progress", function (e) {
@@ -148,30 +153,38 @@
             }, false);
             // File uploaded
             xhr.addEventListener("load", function (e) {
+                if (e.target.status != '200') {
+                    s.error({
+                        'error': e.target.statusText
+                    }, input, area);
+
+                    return;
+                }
+
                 var result = jQuery.parseJSON(e.target.responseText);
-                
+
                 // Calling complete function
                 s.complete(result, file, input, area);
-                
+
                 progress.addClass('uploaded');
                 progress.html(s.uploaded).fadeOut('slow');
             }, false);
             /*
             // Manual Sending
             var boundary = '----dropareaBoundry' + Math.random(1000000,9999999);
-            xhr.setRequestHeader('Content-Type','multipart/form-data; boundary='+boundary); // simulate a file MIME POST request.  
+            xhr.setRequestHeader('Content-Type','multipart/form-data; boundary='+boundary); // simulate a file MIME POST request.
             var body = '';
             for (var i in input.data())
                 if (typeof input.data(i) !== "object")
                     body += '--' + boundary + "\r\n"
-                    + 'Content-Disposition: form-data; name="' + i + "\"\r\n\r\n"  
+                    + 'Content-Disposition: form-data; name="' + i + "\"\r\n\r\n"
                     + input.data(i)+ "\r\n";
-            var read = function(e){                
+            var read = function(e){
                 body += '--' + boundary + "\r\n"
                 + 'Content-Disposition: form-data; name="' + input.attr('name') + '"; filename="' + file.name + '"'+"\r\n"
                 + 'Content-Type: ' + file.type + "\r\n\r\n"
                 + e.target.result + "\r\n"
-                + '--' + boundary + '--';  
+                + '--' + boundary + '--';
                 console.log(body);
                 xhr.send(body);
             };
@@ -226,19 +239,26 @@
             'nosupport'   : 'No support for the File API in this web browser',
             'noimage'     : 'Unsupported file type!',
             'uploaded'    : 'Uploaded',
-            'maxsize'     : '10' //Mb
+            'maxsize'     : '10', //Mb
+            'wrap_container': false
         };
         if(o) $.extend(s, o);
         this.each(function(){
-            var area = $('<div class="'+$(this).attr('class')+'">').insertAfter($(this));
-            var instructions = $('<div>').appendTo(area);
-            var input = $(this).appendTo(area);
-            //var input = $('<input type="file" multiple>').appendTo($(this));
-            
-            s.init($(this));            
+            var area = $(this), input = $(this).children('input') || $(this), instructions = $('<div class="instructions"></div>');
+
+            area.prepend(instructions);
+
+            if (s.wrap_container == true) {
+                area = $('<div' + (($(this).attr('class')) ? ' class="' + $(this).attr('class') + '"' : '') + '>').insertAfter($(this));
+                instructions = $('<div>').appendTo(area);
+                input = $(this).appendTo(area);
+                //var input = $('<input type="file" multiple>').appendTo($(this));
+            }
+
+            s.init($(this));
             if(input.data('value') && input.data('value').length)
                 $('<img src="'+input.data('value')+'">').appendTo(area);
-            else 
+            else
                 instructions.addClass('instructions').html(s.instructions);
 
             // Drag events
@@ -246,14 +266,14 @@
                 dragleave: function (e) {
                     e.preventDefault();
                     if(input.data('value') || area.find('img').length)
-                        instructions.removeClass().empty();
+                        instructions.removeClass('over').empty();
                     else
                         instructions.removeClass('over').html(s.instructions);
                 },
                 drop: function (e) {
                     e.preventDefault();
                     if(input.data('value') || area.find('img').length)
-                        instructions.removeClass().empty();
+                        instructions.removeClass('over').empty();
                     else
                         instructions.removeClass('over').html(s.instructions);
                 },
@@ -266,20 +286,20 @@
                     instructions.addClass('instructions over').html(s.over);
                 }
             });
-            
+
             // Drop file event
             this.addEventListener("drop", function (e) {
                 e.preventDefault();
                 s.start($(this));
                 m.traverse(e.dataTransfer.files, input, area);
-                instructions.removeClass().empty();
+                instructions.removeClass('over').empty();
             },false);
-            
+
             // Browse file event
             input.change(function(e){
                 m.traverse(e.target.files, input, area);
             });
-           
+
         });
     };
 })( jQuery );

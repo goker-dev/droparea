@@ -1,0 +1,50 @@
+h1. Droparea
+
+*droparea* is a jQuery plug-in for HTML5 drag-and-drop (images and files).
+
+Originally it has:
+
+* client-side image resizing with canvas on browser option
+* data url option for sending a file/image as a text field with ajax
+* click event for browsing files
+
+Tested on:
+
+* GoogleChrome (Linux; v. 23)
+* Mozilla Firefox (Linux; v. 17)
+
+h2. Usage
+
+<pre><code>
+  <div class="dropable">
+    <input type="file" name="my_image" data-post="/upload_my_image?parent_model_id=7" data-crop="true" />
+  </div>
+
+  <script>
+      $('.droppable').droparea({
+        instructions: "",
+        start: function() {
+          alert('Let\'s rock!');
+        }
+      });
+  </script>
+</code></pre>
+
+h2. Options available
+
+*Note:* If you want to post more data while uploading a file, you can use "data tag".
+For example: @data-custom="custom-data"@
+
+<pre><code>
+data-width,
+data-height : Optional but required for canvas resizing.
+data-crop   : Optional. This is crop option for canvas resizing. [true/false]
+data-canvas : Canvas resizing option. Default value is false.
+data-post   : Optional. This is an URL for direct posting.
+data-type   : Optional. File tld. [png, jpg, zip] Separate with coma if more than one.
+</code></pre>
+
+h2. Contributors
+
+* "goker.cebeci":https://github.com/gokercebeci , the author
+* "shybovycha":https://github.com/shybovycha , the contributor
