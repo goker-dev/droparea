@@ -1,7 +1,5 @@
 h1. Droparea
 
-h2. Brief overview
-
 *droparea* is a jQuery plug-in for HTML5 drag-and-drop (images and files).
 
 Originally it has:
