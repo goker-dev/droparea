@@ -5,6 +5,7 @@
         init: function(){},
         start: function(){},
         complete: function(){},
+        before: function(file, input, area){ return true; },
         error: function(response, input, area){
             console.error('Error:', response);
 
@@ -48,6 +49,11 @@
                     'error':'max upload size: ' + s.maxsize + 'Mb'
                 }, input, area);
                 return false;
+            }
+
+            if (s.before(file, input, area) === false) {
+                console.warn('doparea upload cancelled by `before` filter');
+                return;
             }
 
             // If the file is an image and data-resize paramater is true,
@@ -248,13 +254,15 @@
             'start'       : m.start,
             'complete'    : m.complete,
             'error'       : m.error,
+            'before'      : m.before,
             'instructions': 'drop a file to here',
             'over'        : 'drop file here!',
             'nosupport'   : 'No support for the File API in this web browser',
             'noimage'     : 'Unsupported file type!',
             'uploaded'    : 'Uploaded',
             'maxsize'     : '10', //Mb
-            'wrap_container': false
+            'wrap_container': false,
+            'handle_click': false
         };
         if(o) $.extend(s, o);
         this.each(function(){
@@ -274,6 +282,10 @@
                 $('<img src="'+input.data('value')+'">').appendTo(area);
             else
                 instructions.addClass('instructions').html(s.instructions);
+
+            if (s.handle_click === true) {
+                input.css({ position: 'absolute', top: '-1000px' });
+            }
 
             // Drag events
             $(document).bind({
@@ -309,6 +321,10 @@
                 instructions.removeClass('over').empty();
                 input.val('');
             },false);
+
+            this.addEventListener('click', function(e) {
+                input.click();
+            });
 
             // Browse file event
             input.change(function(e){
