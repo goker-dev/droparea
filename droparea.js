@@ -5,11 +5,15 @@
         init: function(){},
         start: function(){},
         complete: function(){},
-        error: function(){
+        error: function(response, input, area){
+            console.error('Error:', response);
+
             return 0;
         },
         traverse: function(files, input, area){
             if (typeof files !== "undefined") {
+                m.fileCnt = files.length;
+
                 for (var i=0, l=files.length; i<l; i++) {
                     m.control(files[i], input, area);
                 }
@@ -18,11 +22,10 @@
             }
         },
         control: function(file, input, area){
-
             var tld = file.name.toLowerCase().split(/\./);
             tld = tld[tld.length -1];
 
-            //var types = $(area).data('type').split(/,/);
+            var types = ($(area).data('type') && $(area).data('type').split(/,/)) || [];
 
             // File type control
             //for(var i = types.length; i >= 0; i--){
@@ -125,8 +128,12 @@
             reader.readAsDataURL(file);
         },
         upload: function(file, input, area){
+            if (this.fileCnt > 1) {
+                area.empty();
+            } else {
+                area.children('div').empty();
+            }
 
-            area.find('div').empty();
             var progress = $('<div>',{
                 'class':'progress'
             });
@@ -145,10 +152,16 @@
             xhr.upload.addEventListener("progress", function (e) {
                 if (e.lengthComputable) {
                     var loaded = Math.ceil((e.loaded / e.total) * 100);
-                    progress.css({
-                        'height':loaded + "%",
-                        'line-height': (area.height() * loaded / 100) +'px'
-                    }).html(loaded + "%");
+
+                    if (s.animatedProgress) {
+                        progress.css({
+                            'height':loaded + "%",
+                            'line-height': (area.height() * loaded / 100) +'px',
+                            'vertical-align': 'middle'
+                        });
+                    }
+
+                    progress.html(loaded + "%");
                 }
             }, false);
             // File uploaded
@@ -234,6 +247,7 @@
             'init'        : m.init,
             'start'       : m.start,
             'complete'    : m.complete,
+            'error'       : m.error,
             'instructions': 'drop a file to here',
             'over'        : 'drop file here!',
             'nosupport'   : 'No support for the File API in this web browser',
@@ -293,13 +307,14 @@
                 s.start($(this));
                 m.traverse(e.dataTransfer.files, input, area);
                 instructions.removeClass('over').empty();
+                input.val('');
             },false);
 
             // Browse file event
             input.change(function(e){
                 m.traverse(e.target.files, input, area);
+                input.val('');
             });
-
         });
     };
 })( jQuery );
