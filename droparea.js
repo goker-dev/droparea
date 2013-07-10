@@ -5,6 +5,15 @@
         init: function(){},
         start: function(){},
         complete: function(){},
+        progress: function(loaded_percent, progress_bar, area) {
+            progress_bar.css({
+                'height': loaded_percent + "%",
+                'line-height': (area.height() * loaded_percent / 100) +'px',
+                'vertical-align': 'middle'
+            });
+
+            progress_bar.find('.bar').html(loaded_percent + "%");
+        },
         before: function(file, input, area){ return true; },
         error: function(response, input, area){
             console.error('Error:', response);
@@ -29,22 +38,15 @@
             var types = ($(area).data('type') && $(area).data('type').split(/,/)) || [];
 
             // File type control
-            //for(var i = types.length; i >= 0; i--){
-            //typeof FileReader === "undefined" ||
             if (input.data('type') && !types.indexOf(file.type)) {
-                //area.html(file.type,s.noimage);
-                //var types = $(area).data('type') ? $(area).data('type') : 'jpg, png, gif';
-                //alert('only image files: ' + types);
                 s.error({
                     'error':'only image files: ' + input.data('type')
                 }, input, area);
                 return false;
             }
-            //}
 
             // File size control
             if (file.size > (s.maxsize * 1048576)) {
-                //area.html(file.type,s.maxsize);
                 s.error({
                     'error':'max upload size: ' + s.maxsize + 'Mb'
                 }, input, area);
@@ -64,7 +66,6 @@
                 m.upload(file, input, area);
         },
         resize: function(file, input, area){
-
             // for using after the resize
             var name = file.name;
 
@@ -130,7 +131,7 @@
                         .val(data).insertAfter(input);
                     }
                 }
-            }
+            };
             reader.readAsDataURL(file);
         },
         upload: function(file, input, area){
@@ -140,9 +141,7 @@
                 area.children('div').empty();
             }
 
-            var progress = $('<div>',{
-                'class':'progress'
-            });
+            var progress = $('<div class="progress"><div class="bar"></div></div>');
             area.append(progress);
 
             // Uploading - for Firefox, Google Chrome and Safari
@@ -159,15 +158,11 @@
                 if (e.lengthComputable) {
                     var loaded = Math.ceil((e.loaded / e.total) * 100);
 
-                    if (s.animatedProgress) {
-                        progress.css({
-                            'height':loaded + "%",
-                            'line-height': (area.height() * loaded / 100) +'px',
-                            'vertical-align': 'middle'
-                        });
+                    if (s.progress) {
+                        s.progress(loaded, progress, area);
+                    } else {
+                        progress.html(loaded + "%");
                     }
-
-                    progress.html(loaded + "%");
                 }
             }, false);
             // File uploaded
@@ -188,35 +183,6 @@
                 progress.addClass('uploaded');
                 progress.html(s.uploaded).fadeOut('slow');
             }, false);
-            /*
-            // Manual Sending
-            var boundary = '----dropareaBoundry' + Math.random(1000000,9999999);
-            xhr.setRequestHeader('Content-Type','multipart/form-data; boundary='+boundary); // simulate a file MIME POST request.
-            var body = '';
-            for (var i in input.data())
-                if (typeof input.data(i) !== "object")
-                    body += '--' + boundary + "\r\n"
-                    + 'Content-Disposition: form-data; name="' + i + "\"\r\n\r\n"
-                    + input.data(i)+ "\r\n";
-            var read = function(e){
-                body += '--' + boundary + "\r\n"
-                + 'Content-Disposition: form-data; name="' + input.attr('name') + '"; filename="' + file.name + '"'+"\r\n"
-                + 'Content-Type: ' + file.type + "\r\n\r\n"
-                + e.target.result + "\r\n"
-                + '--' + boundary + '--';
-                console.log(body);
-                xhr.send(body);
-            };
-            var reader = new FileReader();
-            // Firefox 3.6, WebKit
-            if(reader.addEventListener) {
-                reader.addEventListener('loadend', read, false);
-            // Chrome 7
-            } else {
-                reader.onloadend = read;
-            }
-            reader.readAsBinaryString(file);
-            */
             // Create a new formdata
             var fd = new FormData();
             // Add optional form data
@@ -234,7 +200,7 @@
             // doesn't handle URLEncoded DataURIs
             var byteString = atob(dataURI.split(',')[1]);
             // separate out the mime component
-            var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0]
+            var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
             // write the bytes of the string to an ArrayBuffer
             var ab = new ArrayBuffer(byteString.length);
             var ia = new Uint8Array(ab);
@@ -274,7 +240,6 @@
                 area = $('<div' + (($(this).attr('class')) ? ' class="' + $(this).attr('class') + '"' : '') + '>').insertAfter($(this));
                 instructions = $('<div>').appendTo(area);
                 input = $(this).appendTo(area);
-                //var input = $('<input type="file" multiple>').appendTo($(this));
             }
 
             s.init($(this));
