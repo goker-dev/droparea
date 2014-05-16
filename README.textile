@@ -16,7 +16,7 @@ Tested on:
 h2. Usage
 
 <pre><code>
-  <div class="dropable">
+  <div class="droppable">
     <input type="file" name="my_image" data-post="/upload_my_image?parent_model_id=7" data-crop="true" />
   </div>
 
