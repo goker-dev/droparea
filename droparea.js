@@ -297,5 +297,6 @@
                 input.val('');
             });
         });
+        return this;
     };
 })( jQuery );
